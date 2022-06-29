@@ -3,6 +3,7 @@ import styled from "@emotion/styled";
 import Container from "../components/common/Container";
 import Image from "../components/common/Image";
 import Logo from "../components/common/Logo";
+import Button from "../components/common/Button";
 
 const Circle = styled.div`
 	width: 15rem;
@@ -55,6 +56,17 @@ const FirstSectionImage = styled(FirstSectionText)`
 	flex: 1;
 `;
 
+const CTASection = styled(Container)`
+	padding: 1.5rem;
+	display: flex;
+	justify-content: center;
+	gap: 1.5rem;
+
+	@media only screen and (max-width: 768px) {
+		flex-direction: column;
+	}
+`;
+
 export default function Home() {
 	return (
 		<>
@@ -83,6 +95,10 @@ export default function Home() {
 					<Image src="/scanforcoffee.jpg" alt="Scan And Pay" />
 				</FirstSectionImage>
 			</FirstSection>
+			<CTASection>
+				<Button>Become A Customer</Button>
+				<Button variant="secondary">Become A Merchant</Button>
+			</CTASection>
 		</>
 	);
 }
