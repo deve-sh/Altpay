@@ -2,6 +2,7 @@ import Head from "next/head";
 import styled from "@emotion/styled";
 import Container from "../components/common/Container";
 import Image from "../components/common/Image";
+import Logo from "../components/common/Logo";
 
 const Circle = styled.div`
 	width: 15rem;
@@ -14,14 +15,20 @@ const Circle = styled.div`
 	transform: translate(-60%, -60%);
 `;
 
+const HeaderSection = styled(Container)`
+	padding-top: 5rem;
+	text-align: center;
+	display: flex;
+	justify-content: center;
+`;
+
 const FirstSection = styled(Container)`
-	padding-top: 7.5rem;
+	padding-top: 1.5rem;
 	display: flex;
 	flex-flow: row;
 	align-items: center;
 	@media only screen and (max-width: 768px) {
 		flex-flow: column-reverse;
-		padding-top: 1.5rem;
 	}
 `;
 
@@ -55,6 +62,9 @@ export default function Home() {
 				<title>Alt | Scan and Pay with Anything</title>
 			</Head>
 			<Circle />
+			<HeaderSection>
+				<Logo />
+			</HeaderSection>
 			<FirstSection>
 				<FirstSectionText>
 					<FirstSectionHeading>UPI is Amazing!</FirstSectionHeading>
