@@ -31,6 +31,14 @@ const GlobalStyles = () => (
 					overflow-x: hidden;
 				}
 			}
+
+			a,
+			a:hover,
+			a:focus,
+			a:active {
+				text-decoration: none;
+				color: var(--black);
+			}
 		`}
 	/>
 );

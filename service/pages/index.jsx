@@ -4,6 +4,7 @@ import Container from "../components/common/Container";
 import Image from "../components/common/Image";
 import Logo from "../components/common/Logo";
 import Button from "../components/common/Button";
+import Social from "../components/common/Social";
 
 const Circle = styled.div`
 	width: 15rem;
@@ -17,14 +18,21 @@ const Circle = styled.div`
 `;
 
 const HeaderSection = styled(Container)`
-	padding-top: 5rem;
+	padding-top: 4.5rem;
 	text-align: center;
 	display: flex;
 	justify-content: center;
+	position: relative;
+`;
+
+const SocialSectionContainar = styled.div`
+	position: absolute;
+	top: 1rem;
+	right: 1rem;
 `;
 
 const FirstSection = styled(Container)`
-	padding-top: 1.5rem;
+	padding-top: 1rem;
 	display: flex;
 	flex-flow: row;
 	align-items: center;
@@ -76,10 +84,13 @@ export default function Home() {
 			<Circle />
 			<HeaderSection>
 				<Logo />
+				<SocialSectionContainar>
+					<Social />
+				</SocialSectionContainar>
 			</HeaderSection>
 			<FirstSection>
 				<FirstSectionText>
-					<FirstSectionHeading>UPI is Amazing!</FirstSectionHeading>
+					<FirstSectionHeading>UPI Is Amazing!</FirstSectionHeading>
 					<FirstSectionHeading>
 						Let's Add Flexibility To It!
 					</FirstSectionHeading>
