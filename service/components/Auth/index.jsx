@@ -1,5 +1,7 @@
 import styled from "@emotion/styled";
 import GoogleIcon from "@mui/icons-material/Google";
+import { useState } from "react";
+import { signInWithGoogle } from "../../api/supabase/auth";
 
 import Button from "../common/Button";
 import Image from "../common/Image";
@@ -19,13 +21,22 @@ const AuthImage = styled.div`
 `;
 
 const Authentication = ({ show, closeAuthModal }) => {
+	const [isLoggingIn, setIsLoggingIn] = useState(false);
+
+	const startGoogleLogin = async () => {
+		setIsLoggingIn(true);
+		const { error, user } = signInWithGoogle();
+		console.log({ error, user });
+		setIsLoggingIn(false);
+	};
+
 	return (
 		<SlidingModal isOpen={show} close={closeAuthModal}>
 			<AuthContainer>
 				<AuthImage>
 					<Image src="/login.svg" />
 				</AuthImage>
-				<Button>
+				<Button onClick={startGoogleLogin} disabled={isLoggingIn}>
 					<GoogleIcon />
 					&nbsp;&nbsp;Sign In With Google
 				</Button>

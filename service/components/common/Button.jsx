@@ -29,9 +29,15 @@ const StyledButton = styled.button`
 	}
 `;
 
-const Button = ({ children, label, onClick, variant = "primary" }) => {
+const Button = ({
+	children,
+	label,
+	onClick,
+	variant = "primary",
+	...props
+}) => {
 	return (
-		<StyledButton onClick={onClick} variant={variant}>
+		<StyledButton onClick={onClick} variant={variant} {...props}>
 			{children || label}
 		</StyledButton>
 	);
