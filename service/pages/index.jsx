@@ -75,7 +75,7 @@ const CTASection = styled(Container)`
 	}
 `;
 
-export default function Home() {
+export default function Home({ toggleAuthModal }) {
 	return (
 		<>
 			<Head>
@@ -107,8 +107,10 @@ export default function Home() {
 				</FirstSectionImage>
 			</FirstSection>
 			<CTASection>
-				<Button>Become A Customer</Button>
-				<Button variant="secondary">Become A Merchant</Button>
+				<Button onClick={toggleAuthModal}>Become A Customer</Button>
+				<Button onClick={toggleAuthModal} variant="secondary">
+					Become A Merchant
+				</Button>
 			</CTASection>
 		</>
 	);

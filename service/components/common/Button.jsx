@@ -3,6 +3,10 @@ import styled from "@emotion/styled";
 const StyledButton = styled.button`
 	padding: 1.5rem;
 	border-radius: 0.25rem;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	outline: none;
 	cursor: pointer;
 	background: ${(props) =>
 		props.variant === "primary" ? "var(--primary)" : "var(--white)"};
