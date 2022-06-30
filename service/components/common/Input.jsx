@@ -5,8 +5,10 @@ const Input = ({
 	variant = "outlined",
 	value,
 	error = false,
+	label,
 	multiple = false,
 	defaultValue,
+	name,
 	placeholder,
 	type = "text",
 	helperText,
@@ -20,6 +22,8 @@ const Input = ({
 		placeholder={placeholder}
 		variant={variant}
 		type={type}
+		name={name}
+		label={label}
 		multiple={multiple}
 	/>
 );
