@@ -11,6 +11,7 @@ import {
 	OutlinedInput,
 } from "@mui/material";
 
+import getUPIIdFromQRLink from "../utils/getUPIIdFromQRLink";
 import SlidingModal from "../components/common/Modal";
 import Image from "../components/common/Image";
 import CameraOptions from "../components/QRScanner/CameraOptions";
@@ -43,7 +44,6 @@ const AmountFormContainer = styled.form`
 
 const AmountFormImageContainer = styled.div`
 	height: 35vh;
-	max-width: 60%;
 	margin-bottom: 1.25rem;
 `;
 
@@ -60,6 +60,7 @@ const ScanQR = () => {
 	const qrScannerRef = useRef();
 
 	const [currentScannedQR, setCurrentScannedQR] = useState("");
+	const [scannedUPIId, setScannedUPIId] = useState("");
 	const [amount, setAmount] = useState("");
 
 	const [camerasAvailable, setCamerasAvailable] = useState([]);
@@ -98,6 +99,7 @@ const ScanQR = () => {
 	const startScanning = () => {
 		if (qrScannerRef.current) {
 			setCurrentScannedQR("");
+			setScannedUPIId("");
 			return qrScannerRef.current.start();
 		}
 		qrScannerRef.current = new QrScanner(
@@ -105,6 +107,7 @@ const ScanQR = () => {
 			(result) => {
 				if (result.data.startsWith("upi://")) {
 					setCurrentScannedQR(result.data);
+					setScannedUPIId(getUPIIdFromQRLink(result.data));
 					qrScannerRef.current.stop();
 				}
 				// Keep scanning otherwise.
@@ -143,7 +146,8 @@ const ScanQR = () => {
 					<AmountFormImageContainer>
 						<Image src="/pay.svg" />
 					</AmountFormImageContainer>
-					<FormControl fullWidth sx={{ m: 1 }}>
+					ID: {scannedUPIId}
+					<FormControl fullWidth>
 						<InputLabel htmlFor="payment-amount">Amount</InputLabel>
 						<OutlinedInput
 							id="payment-amount"
