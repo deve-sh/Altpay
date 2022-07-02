@@ -77,7 +77,7 @@ const CTASection = styled(Container)`
 	}
 `;
 
-export default function Home({ toggleAuthModal, user }) {
+export default function Home({ authModalHandlers: { toggleAuthModal }, user }) {
 	const { push } = useRouter();
 
 	if (user) push("/dashboard");

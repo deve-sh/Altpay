@@ -9,6 +9,7 @@ function Alt({ Component: Page, pageProps }) {
 
 	const toggleAuthModal = () => setShowAuthModal((show) => !show);
 	const closeAuthModal = () => setShowAuthModal(false);
+	const openAuthModal = () => setShowAuthModal(true);
 
 	const user = useAuthState();
 
@@ -19,7 +20,11 @@ function Alt({ Component: Page, pageProps }) {
 			</Head>
 			<GlobalStyles />
 			<Authentication show={showAuth} closeAuthModal={closeAuthModal} />
-			<Page {...pageProps} user={user} toggleAuthModal={toggleAuthModal} />
+			<Page
+				{...pageProps}
+				user={user}
+				authModalHandlers={{ toggleAuthModal, openAuthModal, closeAuthModal }}
+			/>
 		</>
 	);
 }
