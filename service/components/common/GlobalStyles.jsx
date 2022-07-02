@@ -1,4 +1,6 @@
 import { Global, css } from "@emotion/react";
+import { ThemeProvider } from "@mui/system";
+import { createTheme } from "@mui/material/styles";
 
 const GlobalStyles = () => (
 	<Global
@@ -43,4 +45,21 @@ const GlobalStyles = () => (
 	/>
 );
 
-export default GlobalStyles;
+const theme = createTheme({
+	palette: {
+		primary: {
+			main: "#1c2e35",
+		},
+	},
+});
+
+const GlobalStylesWrapper = ({ children }) => {
+	return (
+		<ThemeProvider theme={theme}>
+			<GlobalStyles />
+			{children}
+		</ThemeProvider>
+	);
+};
+
+export default GlobalStylesWrapper;
