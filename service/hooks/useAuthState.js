@@ -10,10 +10,6 @@ const useAuthState = () => {
 		if (window.setAuthListener) return;
 		window.setAuthListener = true;
 
-		const accessTokenFromPreviousSession = cookie.get("access_token");
-		if (accessTokenFromPreviousSession)
-			supabase.auth.setAuth(accessTokenFromPreviousSession);
-
 		supabase.auth.onAuthStateChange((event, session) => {
 			if (event === "SIGNED_IN") {
 				setUser(session.user);
@@ -29,6 +25,10 @@ const useAuthState = () => {
 				cookie.remove("provider_token");
 			}
 		});
+
+		const accessTokenFromPreviousSession = cookie.get("access_token");
+		if (accessTokenFromPreviousSession)
+			supabase.auth.setAuth(accessTokenFromPreviousSession);
 	}, []);
 
 	useDebugValue({ user });
