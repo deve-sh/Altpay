@@ -1,10 +1,8 @@
 import Head from "next/head";
-import { useRouter } from "next/router";
+import useLoginRedirect from "../hooks/useLoginRedirect";
 
 const UserDashboard = ({ user }) => {
-	const { push } = useRouter();
-
-	if (!user) push("/");
+	useLoginRedirect();
 
 	return (
 		<>
