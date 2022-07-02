@@ -1,9 +1,8 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import Script from "next/script";
 import { useRouter } from "next/router";
 
 import useLoginRedirect from "../hooks/useLoginRedirect";
-import { useEffect } from "react";
 import request from "../api/supabase/request";
 
 const MakePayment = () => {
