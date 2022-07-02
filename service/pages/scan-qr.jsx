@@ -13,6 +13,24 @@ import {
 
 import SlidingModal from "../components/common/Modal";
 import Image from "../components/common/Image";
+import CameraOptions from "../components/QRScanner/CameraOptions";
+
+const Base = styled.div`
+	background: var(--primary);
+	height: 100vh;
+	width: 100vw;
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+`;
+
+const ScanVideoElement = styled.video`
+	max-height: 100vh;
+	width: 100vw;
+	z-index: 1000;
+`;
 
 const AmountFormContainer = styled.form`
 	padding: 1.5rem;
@@ -44,6 +62,32 @@ const ScanQR = () => {
 	const [currentScannedQR, setCurrentScannedQR] = useState("");
 	const [amount, setAmount] = useState("");
 
+	const [camerasAvailable, setCamerasAvailable] = useState([]);
+	const [selectedCamera, setSelectedCamera] = useState("");
+
+	const [hasFlash, setHasFlash] = useState(false);
+	const [isFlashOn, setIsFlashOn] = useState(false);
+
+	const toggleFlash = () => {
+		if (qrScannerRef.current) {
+			qrScannerRef.current.toggleFlash().then(() => {
+				qrScannerRef.current.isFlashOn().then(setIsFlashOn);
+			});
+		}
+	};
+
+	const getCameraList = () => {
+		QrScanner.listCameras().then((cameraList) => {
+			setCamerasAvailable(cameraList);
+			setSelectedCamera(cameraList[0]?.id || 0);
+			getFlashAvailable();
+		});
+	};
+	const getFlashAvailable = () => {
+		if (qrScannerRef.current) {
+			qrScannerRef.current.hasFlash().then(setHasFlash);
+		}
+	};
 	const startScanning = () => {
 		if (qrScannerRef.current) {
 			setCurrentScannedQR("");
@@ -52,16 +96,23 @@ const ScanQR = () => {
 		qrScannerRef.current = new QrScanner(
 			videoElementRef.current,
 			(result) => {
-				console.log("decoded qr code:", result.data);
-				setCurrentScannedQR(result.data);
-				qrScannerRef.current.stop();
+				if (result.data.startsWith("upi://")) {
+					setCurrentScannedQR(result.data);
+					qrScannerRef.current.stop();
+				}
+				// Keep scanning otherwise.
 			},
 			{ highlightScanRegion: true, highlightCodeOutline: true }
 		);
 		qrScannerRef.current.start();
 	};
 
+	const changeCamera = (cameraId) => {
+		if (qrScannerRef.current) qrScannerRef.current.setCamera(cameraId);
+	};
+
 	useEffect(() => {
+		getCameraList();
 		startScanning();
 	}, []);
 
@@ -77,6 +128,7 @@ const ScanQR = () => {
 			<Head>
 				<title>Alt | Scan QR</title>
 			</Head>
+			<Base />
 			<SlidingModal isOpen={currentScannedQR} close={startScanning}>
 				<AmountFormContainer>
 					<AmountFormImageContainer>
@@ -87,6 +139,10 @@ const ScanQR = () => {
 						<OutlinedInput
 							id="payment-amount"
 							value={amount}
+							type="number"
+							step="0.01"
+							required
+							min="1"
 							onChange={(e) => setAmount(e.target.value)}
 							startAdornment={
 								<InputAdornment position="start">₹</InputAdornment>
@@ -100,17 +156,24 @@ const ScanQR = () => {
 							color="primary"
 							onClick={proceedToPayment}
 							disabled={!Number(amount)}
-							disableElevation
 						>
 							Proceed To Pay
 						</Button>
-						<Button color="error" onClick={startScanning} disableElevation>
+						<Button color="error" onClick={startScanning}>
 							Scan Again
 						</Button>
 					</ActionList>
 				</AmountFormContainer>
 			</SlidingModal>
-			<video ref={videoElementRef} />
+			<CameraOptions
+				camerasAvailable={camerasAvailable}
+				selectedCamera={selectedCamera}
+				onCameraChange={changeCamera}
+				hasFlash={hasFlash}
+				isFlashOn={isFlashOn}
+				toggleFlash={toggleFlash}
+			/>
+			<ScanVideoElement ref={videoElementRef} />
 		</>
 	);
 };
