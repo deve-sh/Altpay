@@ -77,16 +77,14 @@ const ScanQR = () => {
 	};
 
 	const getCameraList = () => {
-		QrScanner.listCameras().then((cameraList) => {
+		QrScanner.listCameras(true).then((cameraList) => {
 			setCamerasAvailable(cameraList);
 			setSelectedCamera(cameraList[0]?.id || 0);
 			getFlashAvailable();
 		});
 	};
 	const getFlashAvailable = () => {
-		if (qrScannerRef.current) {
-			qrScannerRef.current.hasFlash().then(setHasFlash);
-		}
+		if (qrScannerRef.current) qrScannerRef.current.hasFlash().then(setHasFlash);
 	};
 	const startScanning = () => {
 		if (qrScannerRef.current) {
@@ -108,7 +106,12 @@ const ScanQR = () => {
 	};
 
 	const changeCamera = (cameraId) => {
-		if (qrScannerRef.current) qrScannerRef.current.setCamera(cameraId);
+		if (qrScannerRef.current) {
+			qrScannerRef.current.setCamera(cameraId).then(() => {
+				getFlashAvailable();
+				setSelectedCamera(cameraId);
+			});
+		}
 	};
 
 	useEffect(() => {

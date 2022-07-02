@@ -53,7 +53,9 @@ const CameraOptions = ({
 						id="camera-select-input"
 						value={selectedCamera}
 						onChange={onCameraChange}
-						input={<OutlinedInput label="Camera" />}
+						input={
+							<OutlinedInput style={{ minWidth: "250px" }} label="Camera" />
+						}
 					>
 						{camerasAvailable.map((camera, index) => (
 							<MenuItem key={camera.id || index} value={camera.id || index}>
