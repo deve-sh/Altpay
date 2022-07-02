@@ -1,3 +1,5 @@
+import { useEffect } from "react";
+import { useRouter } from 'next/router';
 import Head from "next/head";
 import styled from "@emotion/styled";
 import Container from "../components/common/Container";
@@ -75,7 +77,13 @@ const CTASection = styled(Container)`
 	}
 `;
 
-export default function Home({ toggleAuthModal }) {
+export default function Home({ toggleAuthModal, user }) {
+	const { push } = useRouter();
+
+	useEffect(() => {
+		if (user) push("/dashboard");
+	}, [user]);
+
 	return (
 		<>
 			<Head>
