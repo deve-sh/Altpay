@@ -10,7 +10,7 @@ export default async function createWalletAddMoneyTransaction(req, res) {
 		});
 
 	try {
-		const { amount, merchant = "", upi_qr_link = "", comment = "" } = req.body; // amount -> Paise
+		const { amount, upi_qr_link = "", comment = "" } = req.body; // amount -> Paise
 		const { access_token } = req.cookies;
 
 		if (!access_token || !amount || !merchant || !upi_qr_link)
@@ -20,25 +20,24 @@ export default async function createWalletAddMoneyTransaction(req, res) {
 		const { user, error } = await verifyAccessToken(access_token);
 		if (!user || !user.id || error) return error(401, "Unauthorized");
 
+		// Verify QR Link being used.
+		const { data: qrCodeInfo, error: qrFetchingInfo } = await getMerchantQRInfo(
+			upi_qr_link
+		);
+		if (!qrCodeInfo || !qrCodeInfo.merchant_id || qrFetchingInfo)
+			return error(
+				404,
+				"Merchant hasn't registered this UPI ID yet. Please pay via UPI directly for now."
+			);
+
 		// Verify merchant
 		const { data: merchantData, error: merchantFetchingError } =
-			await getMerchant(merchant);
+			await getMerchant(qrCodeInfo.merchant_id);
 		if (!merchantData || merchantFetchingError)
 			return error(404, "Merchant not found");
 
 		const isMerchantVerified = merchantData.is_verified;
 		if (!isMerchantVerified) return error(400, "Merchant is not verified yet.");
-
-		// Verify QR Link being used.
-		const { data: qrCodeInfo, error: qrFetchingInfo } = await getMerchantQRInfo(
-			upi_qr_link,
-			merchant
-		);
-		if (!qrCodeInfo || qrFetchingInfo)
-			return error(
-				404,
-				"Merchant hasn't registered this UPI ID yet. Please pay via UPI directly for now."
-			);
 
 		const order = await razorpay.orders.create({
 			amount,
@@ -48,13 +47,16 @@ export default async function createWalletAddMoneyTransaction(req, res) {
 				merchant,
 				upi_qr_link,
 				upi_id: qrCodeInfo.upi_id,
+				comment,
 			},
 		});
 
 		if (order) {
-			return res
-				.status(201)
-				.json({ message: "Created Order Successfully", order });
+			return res.status(201).json({
+				message: "Created Order Successfully",
+				merchant: merchantData,
+				order,
+			});
 		}
 		return error(500, "Order could not be created.");
 	} catch (err) {
