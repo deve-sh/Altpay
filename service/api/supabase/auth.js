@@ -7,3 +7,6 @@ export const signInWithGoogle = () =>
 		},
 		{ redirectTo: window.location.toString() }
 	);
+
+export const verifyAccessToken = (accessToken) =>
+	supabase.auth.api.getUser(accessToken);
