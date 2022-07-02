@@ -11,13 +11,12 @@ const MakePayment = () => {
 	useLoginRedirect();
 
 	const [error, setError] = useState("");
-	const [amount, setAmount] = useState("");
 	const [paymentComment, setPaymentComment] = useState("");
 	const [processing, setProcessing] = useState(false);
 
 	const initializePayment = useCallback(async () => {
 		if (!query.upi_qr_link) return alert("Invalid UPI QR");
-		const amountToPay = Number(amount);
+		const amountToPay = Number(query.amount);
 		if (!amountToPay) return alert("Amount is invalid");
 
 		// Make API call to create a payment order.
@@ -61,7 +60,7 @@ const MakePayment = () => {
 			alert(response.error.metadata.payment_id);
 		});
 		rzpInstance.open();
-	}, [amount, query]);
+	}, [query]);
 
 	return (
 		<>
