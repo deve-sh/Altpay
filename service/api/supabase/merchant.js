@@ -11,7 +11,6 @@ export const getMerchantQRInfo = (qrLink, merchantId) => {
 		return supabase
 			.from("merchant_upi_ids_and_qrs")
 			.select()
-			.eq("merchant_id", merchantId)
 			.eq("upi_id", upiIdFromQRLink)
 			.single();
 	} catch (err) {
