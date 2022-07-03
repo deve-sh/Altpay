@@ -1,5 +1,9 @@
 import { verifyAccessToken } from "../../api/supabase/auth";
-import { getMerchant, getMerchantQRInfo } from "../../api/supabase/merchant";
+import {
+	createTransaction,
+	getMerchant,
+	getMerchantQRInfo,
+} from "../../api/supabase/merchant";
 import razorpay from "../../utils/razorpay";
 
 export default async function createWalletAddMoneyTransaction(req, res) {
@@ -53,6 +57,17 @@ export default async function createWalletAddMoneyTransaction(req, res) {
 				comment,
 			},
 		});
+
+		const { error: transactionCreationError } = await createTransaction({
+			user: user.id,
+			merchant: qrCodeInfo.merchant_id,
+			comment,
+			order,
+			amount,
+			merchantUPIId: qrCodeInfo.id,
+		});
+		if (transactionCreationError)
+			return error(500, "Failed to setup transaction. Please try again later.");
 
 		if (order) {
 			return res.status(201).json({

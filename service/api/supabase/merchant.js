@@ -1,4 +1,5 @@
 import supabase from "./index";
+import supabaseServiceAdmin from "./adminClient";
 import getUPIIdFromQRLink from "../../utils/getUPIIdFromQRLink";
 
 export const getMerchant = (merchantId) =>
@@ -16,3 +17,26 @@ export const getMerchantQRInfo = (qrLink) => {
 		return { data: null, error: err.message };
 	}
 };
+
+export const createTransaction = ({
+	merchant,
+	user,
+	comment,
+	amount,
+	currency = "INR",
+	order = {},
+	merchantUPIId,
+}) =>
+	supabaseServiceAdmin.from("transactions").insert([
+		{
+			merchant_id: merchant,
+			user_id: user,
+			comment: comment || "",
+			amount,
+			currency,
+			is_complete: false,
+			order_id: order.id,
+			order_json: order,
+			merchant_upi_id: merchantUPIId,
+		},
+	]);
