@@ -15,6 +15,7 @@ import getUPIIdFromQRLink from "../utils/getUPIIdFromQRLink";
 import SlidingModal from "../components/common/Modal";
 import Image from "../components/common/Image";
 import CameraOptions from "../components/QRScanner/CameraOptions";
+import useLoginRedirect from "../hooks/useLoginRedirect";
 
 const Base = styled.div`
 	background: var(--primary);
@@ -62,6 +63,8 @@ const LogDrain = styled.div`
 `;
 
 const ScanQR = () => {
+	useLoginRedirect();
+
 	const router = useRouter();
 	const videoElementRef = useRef();
 	const qrScannerRef = useRef();
