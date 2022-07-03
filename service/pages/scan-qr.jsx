@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, Fragment } from "react";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import styled from "@emotion/styled";
@@ -54,6 +54,13 @@ const ActionList = styled.div`
 	justify-content: center;
 `;
 
+const LogDrain = styled.div`
+	padding: 1rem;
+	top: 100%;
+	position: absolute;
+	z-index: 1060;
+`;
+
 const ScanQR = () => {
 	const router = useRouter();
 	const videoElementRef = useRef();
@@ -69,6 +76,8 @@ const ScanQR = () => {
 	const [hasFlash, setHasFlash] = useState(false);
 	const [isFlashOn, setIsFlashOn] = useState(false);
 
+	const [logData, setLogData] = useState([]);
+
 	const toggleFlash = () => {
 		if (qrScannerRef.current) {
 			qrScannerRef.current.toggleFlash().then(() => {
@@ -77,23 +86,36 @@ const ScanQR = () => {
 		}
 	};
 
-	const getCameraList = () => {
-		QrScanner.listCameras(true).then((cameraList) => {
-			setCamerasAvailable(cameraList);
-			setSelectedCamera(cameraList[0]?.id || 0);
-		});
-	};
-	const getFlashAvailable = () => {
-		if (qrScannerRef.current) qrScannerRef.current.hasFlash().then(setHasFlash);
+	const log = (logs) => {
+		console.log(logs);
+		setLogData((logsData) => [...logsData, logs]);
 	};
 
 	const changeCamera = (cameraId) => {
 		if (qrScannerRef.current) {
+			log("Changing Camera to: " + cameraId);
 			qrScannerRef.current.setCamera(cameraId).then(() => {
 				getFlashAvailable();
 				setSelectedCamera(cameraId);
+				log(
+					"Changed Camera to: " +
+						cameraId +
+						" Label: " +
+						camerasAvailable.find((camera) => camera.id === cameraId)?.label
+				);
 			});
 		}
+	};
+
+	const getCameraList = () => {
+		QrScanner.listCameras(true).then((cameraList) => {
+			setCamerasAvailable(cameraList);
+			changeCamera(cameraList[0]?.id || 0);
+		});
+	};
+
+	const getFlashAvailable = () => {
+		if (qrScannerRef.current) qrScannerRef.current.hasFlash().then(setHasFlash);
 	};
 
 	const startScanning = () => {
@@ -118,8 +140,8 @@ const ScanQR = () => {
 	};
 
 	useEffect(() => {
-		getCameraList();
 		startScanning();
+		getCameraList();
 	}, []);
 
 	useEffect(() => {
@@ -185,8 +207,21 @@ const ScanQR = () => {
 				hasFlash={hasFlash}
 				isFlashOn={isFlashOn}
 				toggleFlash={toggleFlash}
+				logsEnabled={router.query.log}
 			/>
 			<ScanVideoElement ref={videoElementRef} />
+			{router.query.log ? (
+				<LogDrain>
+					{logData.map((log, index) => (
+						<Fragment key={index}>
+							{log}
+							<br />
+						</Fragment>
+					))}
+				</LogDrain>
+			) : (
+				""
+			)}
 		</>
 	);
 };

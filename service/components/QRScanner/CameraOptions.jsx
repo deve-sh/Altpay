@@ -14,7 +14,7 @@ import {
 } from "@mui/material";
 
 const CameraOptionsContainer = styled.div`
-	position: fixed;
+	position: ${(props) => (props.$logsEnabled ? "absolute" : "fixed")};
 	bottom: 0;
 	right: 0;
 	left: 0;
@@ -35,6 +35,7 @@ const CameraListContainer = styled.div`
 `;
 
 const CameraOptions = ({
+	logsEnabled,
 	camerasAvailable,
 	onCameraChange,
 	selectedCamera,
@@ -43,7 +44,7 @@ const CameraOptions = ({
 	toggleFlash,
 }) => {
 	return (
-		<CameraOptionsContainer>
+		<CameraOptionsContainer $logsEnabled={logsEnabled}>
 			<CameraListContainer>
 				<VideocamIcon fontSize="large" />
 				<FormControl>
