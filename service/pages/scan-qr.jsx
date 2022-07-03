@@ -72,6 +72,7 @@ const ScanQR = () => {
 	const [currentScannedQR, setCurrentScannedQR] = useState("");
 	const [scannedUPIId, setScannedUPIId] = useState("");
 	const [amount, setAmount] = useState("");
+	const [comment, setComment] = useState("");
 
 	const [camerasAvailable, setCamerasAvailable] = useState([]);
 	const [selectedCamera, setSelectedCamera] = useState("");
@@ -154,10 +155,11 @@ const ScanQR = () => {
 	}, [camerasAvailable]);
 
 	const proceedToPayment = () => {
-		if (amount)
-			router.push(
-				`/make-payment?upi_qr_id=${currentScannedQR}&amount=${amount}`
-			);
+		const urlParams = new URLSearchParams();
+		urlParams.set("upi_qr_link", currentScannedQR);
+		urlParams.set("amount", amount);
+		urlParams.set("payment_comment", comment || "");
+		if (amount) router.push(`/make-payment?${urlParams.toString()}`);
 	};
 
 	return (
@@ -186,6 +188,16 @@ const ScanQR = () => {
 								<InputAdornment position="start">₹</InputAdornment>
 							}
 							label="Amount"
+						/>
+					</FormControl>
+					<FormControl fullWidth>
+						<InputLabel htmlFor="payment-comment">Comments</InputLabel>
+						<OutlinedInput
+							id="payment-comment"
+							value={comment}
+							type="text"
+							onChange={(e) => setComment(e.target.value)}
+							label="Comment"
 						/>
 					</FormControl>
 					<ActionList>
