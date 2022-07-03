@@ -13,12 +13,15 @@ export default async function createWalletAddMoneyTransaction(req, res) {
 		const { amount, upi_qr_link = "", comment = "" } = req.body; // amount -> Paise
 		const { access_token } = req.cookies;
 
-		if (!access_token || !amount || !merchant || !upi_qr_link)
+		if (!access_token || !amount || !upi_qr_link)
 			return error(400, "Invalid information.");
 
 		// Get user details from token.
-		const { user, error } = await verifyAccessToken(access_token);
-		if (!user || !user.id || error) return error(401, "Unauthorized");
+		const { user, error: userFetchingError } = await verifyAccessToken(
+			access_token
+		);
+		if (!user || !user.id || userFetchingError)
+			return error(401, "Unauthorized");
 
 		// Verify QR Link being used.
 		const { data: qrCodeInfo, error: qrFetchingInfo } = await getMerchantQRInfo(
@@ -44,7 +47,7 @@ export default async function createWalletAddMoneyTransaction(req, res) {
 			currency: "INR",
 			notes: {
 				user: user.id,
-				merchant,
+				merchant: qrCodeInfo.merchant_id,
 				upi_qr_link,
 				upi_id: qrCodeInfo.upi_id,
 				comment,
