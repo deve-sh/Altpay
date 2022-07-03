@@ -53,7 +53,7 @@ const CameraOptions = ({
 						labelId="camera-select"
 						id="camera-select-input"
 						value={selectedCamera}
-						onChange={onCameraChange}
+						onChange={(e) => onCameraChange(e.target.value)}
 						input={
 							<OutlinedInput style={{ minWidth: "250px" }} label="Camera" />
 						}
