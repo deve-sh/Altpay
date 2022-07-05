@@ -65,6 +65,23 @@ export default async function razorpayWebhook(req, res) {
 				amount: amountToTransfer,
 				currency: "INR",
 			});
+
+			await Promise.all([
+				supabase
+					.from("transactions")
+					.update({
+						status: "complete",
+						is_complete: true,
+						completed_at: new Date(),
+					})
+					.match({ id: transactionData.id }),
+				supabase.from("transaction_payments").insert([
+					{
+						payment_info: { ...paymentInfo, order },
+						transaction_id: transactionData.id,
+					},
+				]),
+			]);
 		}
 	} catch (err) {
 		console.log("Razorpay Webhook Error: ", err);
